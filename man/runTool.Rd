@@ -11,7 +11,7 @@ Run the overlay tool
 }
 \examples{
 ## not run
-# runOverlay()
+# runTool()
 ## print the directory containing the code for the application
-system.file("shiny-examples", "overlay", package = "shinyoverlay")
+system.file("shiny-examples", "overlay", package = "viscover")
 }
