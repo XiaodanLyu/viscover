@@ -7,5 +7,5 @@ Depends: R (>= 3.5.0)
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-Imports: raster, sp, XML, glue, dplyr, utils, methods, dismo, RCurl, magrittr, rgeos, soilDB (>= 2.0-1), leaflet (>= 2.0.0), leaflet.extras (>= 1.0.0), plotly (>= 4.8.0.9000), DT, shiny (>= 1.1.0), shinycssloaders, shinydashboard, shinyWidgets
+Imports: raster, sp, XML, glue, dplyr, utils, methods, dismo, RCurl, magrittr, rgeos, soilDB (>= 2.0-1), leaflet (>= 2.0.0), leaflet.extras (>= 1.0.0), plotly (>= 4.8.0), DT, shiny (>= 1.1.0), shinycssloaders, shinydashboard, shinyWidgets
 RoxygenNote: 6.1.0
