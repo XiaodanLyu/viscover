@@ -23,7 +23,7 @@ ui <- dashboardPage(
           tags$ul(
             tags$li(
               "The layer control at the bottom left corner allows you to preview CDL data across different years.
-              Press the yellow top-left calendar button to confirm your choice of CDL year."),
+              Press the top-left calendar button to confirm your choice of CDL year."),
             tags$li(
               "By selecting two tiles (Map unit polygon & Survey area polygon), you will
                see the soil mapunits polygons within the current extent of the map."),
@@ -33,7 +33,7 @@ ui <- dashboardPage(
                 tags$li("Clicking the map would prompt to draw a marker (labelled as a yelow 'C' or a blue 'S') on that location.
                         To see the CDL/SDL info for that location, hover over the marker.
                         Click the marker again to remove it."),
-                tags$li("The green top-left download button would let you download a .csv file containing
+                tags$li("The top-left download button would let you download a .csv file containing
                         the CDL/SDL features at the existing markers on the map."))
             )
           ),
@@ -44,8 +44,7 @@ ui <- dashboardPage(
             tags$li("Thirdly, unfold the 'Soil Data Layer' box under the map panel and click the 'update' button, then you'll be able to see the SDL information."),
             tags$li("Lastly, unfold the 'Cropland Data Layer' box and then you'll be able to see the tabulated CDL pixels which fall within the red bounding box or the selected map units.")
           ),
-          p("About the author:", tags$a(href = "http://annielyu.com", "Xiaodan Lyu"),
-            ". Source code at Github:", tags$a(href = "https://github.com/XiaodanLyu/SoilDB_Leaflet", "SoilDB_Leaflet"))
+          p("About the author:", tags$a(href = "http://annielyu.com", "Xiaodan Lyu"))
       ),
       hr(),
       box(width = 12,
