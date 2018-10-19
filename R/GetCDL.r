@@ -13,6 +13,7 @@ NULL
 #' ## not run
 #' # GetCDLFile(2017, poly)
 #' @export
+#' @seealso \code\link{GetCDLValue}
 GetCDLFile <- function(year, b){
 
   bb.poly <- methods::as(raster::extent(b), "SpatialPolygons")
@@ -48,6 +49,7 @@ GetCDLFile <- function(year, b){
 #' ## not run
 #' # GetCDLValue(2017, -93.65, 42.03)
 #' @export
+#' @seealso \code\link{GetCDLFile}
 GetCDLValue <- function(year, lon, lat){
 
   pt <- cbind(lon = lon, lat = lat) %>% sp::SpatialPoints(proj4string = sp::CRS("+init=epsg:4326"))

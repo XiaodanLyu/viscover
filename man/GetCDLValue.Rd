@@ -23,3 +23,6 @@ Get CDL point information by longitude and latitude in WGS84.
 ## not run
 # GetCDLValue(2017, -93.65, 42.03)
 }
+\seealso{
+\code\link{GetCDLFile}
+}
