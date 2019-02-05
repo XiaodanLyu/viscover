@@ -2,6 +2,7 @@
 
 export(GetCDLFile)
 export(GetCDLValue)
+export(GetSDLValue)
 export(TileinPoly)
 export(cdlpal)
 export(runTool)

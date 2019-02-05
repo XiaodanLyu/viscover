@@ -4,11 +4,11 @@ Version: 0.1.0
 Authors@R: person("Xiaodan", "Lyu", email = "lyux1994@gmail.com", role = c("aut", "cre"))
 Description: This package embed a shiny app to visualize soil survey data and cropland data layer. Some functions to fetch CDL file and values are also provided.
 Depends: R (>= 3.1.0)
-License: GPL-3
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports: raster, sp, XML, glue, dplyr, utils, methods, dismo, RCurl, magrittr, rgeos, soilDB (>= 2.0-1), leaflet (>= 2.0.0), leaflet.extras (>= 1.0.0), plotly (>= 4.8.0), DT, shiny (>= 1.1.0), shinycssloaders, shinydashboard, shinyWidgets
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Suggests: knitr,
     rmarkdown
 VignetteBuilder: knitr

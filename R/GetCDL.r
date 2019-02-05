@@ -71,3 +71,33 @@ GetCDLValue <- function(year, lon, lat){
 
   return(list(value = value, category = category, color = color))
 }
+
+#' Get SDL point
+#'
+#' Get soil point information by longitude and latitude in WGS84.
+#'
+#' @param lon longitude in WGS84
+#' @param lat latitude in WGS84
+#' @return A list with the soil musym, mukey, muname, muacres
+#' @examples
+#' ## not run
+#' # GetSDLValue(-93.65, 42.03)
+#' @export
+#' @seealso \code\link{GetCDLValue}
+GetSDLValue <- function(lon, lat){
+  ## lon, lat: longitude and latitude in WGS84
+  pt <- matrix(c(lon, lat), nc = 2, byrow = T)
+  circ <- dismo::circles(pt, d = .1, lonlat = TRUE)
+  p <- rgeos::writeWKT(circ@polygons)
+  q <- paste0("SELECT musym, mukey, muname, muacres
+              FROM mapunit
+              WHERE mukey IN (
+              SELECT * from SDA_Get_Mukey_from_intersection_with_WktWgs84('", p, "')
+              )")
+  qres <- soilDB::SDA_query(q)
+  if(nrow(qres)>1) {
+    warning(sprintf("%.0f soil mapunits are found, choose the first one", nrow(qres)))
+    qres <- qres[1,]
+  }
+  qres
+}

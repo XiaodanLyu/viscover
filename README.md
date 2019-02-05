@@ -26,6 +26,12 @@ help(GetCDLFile)
 help(GetCDLValue)
 ```
 
+- To fetch SDL data by pointwise coordinate
+
+```r
+help(GetSDLValue)
+```
+
 - CDL color scheme and palette:
 
 ```r
