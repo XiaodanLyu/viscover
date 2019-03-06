@@ -12,7 +12,7 @@ GetSDLValue(lon, lat)
 \item{lat}{latitude in WGS84}
 }
 \value{
-A list with the soil musym, mukey, muname, muacres
+a dataframe with soil areasymbol, musym, mukey, muname, muacres
 }
 \description{
 Get soil point information by longitude and latitude in WGS84.
@@ -22,5 +22,5 @@ Get soil point information by longitude and latitude in WGS84.
 # GetSDLValue(-93.65, 42.03)
 }
 \seealso{
-\code\link{GetCDLValue}
+\code{\link{GetCDLValue}}
 }

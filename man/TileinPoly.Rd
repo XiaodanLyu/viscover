@@ -18,6 +18,6 @@ a dataframe with the counts of tile points in the polygon
 Obtain the spatial intersection of a rater tile and a spatial polygon.
 }
 \examples{
-library(dplyr)
-TileinPoly(tile, poly)
+## not run
+# TileinPoly(tile, poly)
 }

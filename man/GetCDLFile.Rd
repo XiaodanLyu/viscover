@@ -22,5 +22,5 @@ Get CDL raster file by spatial extent in WGS84.
 # GetCDLFile(2017, poly)
 }
 \seealso{
-\code\link{GetCDLValue}
+\code{\link{GetCDLValue}}
 }

@@ -13,7 +13,7 @@ NULL
 #' ## not run
 #' # GetCDLFile(2017, poly)
 #' @export
-#' @seealso \code\link{GetCDLValue}
+#' @seealso \code{\link{GetCDLValue}}
 GetCDLFile <- function(year, b){
 
   bb.poly <- methods::as(raster::extent(b), "SpatialPolygons")
@@ -23,14 +23,14 @@ GetCDLFile <- function(year, b){
   bb.poly.proj <- sp::spTransform(bb.poly, crs.cropscape)
   b2 <- as.vector(sp::bbox(bb.poly.proj))
   url <- paste0(baseurl, 'year=', year, '&bbox=', glue::collapse(b2, sep = ","))
-  html <- readLines(url, warn = FALSE)
+  html <- RCurl::getURL(url, .opts = list(ssl.verifypeer = FALSE), crlf = TRUE)
   doc <- XML::xmlTreeParse(html)
   top <- XML::xmlRoot(doc)
   tifurl <- XML::xmlValue(top[[1]][["text"]])
   # cdl_raster <- raster(tifurl) ## only works on Mac OS
   dir.create("temp", showWarnings = FALSE)
   destfile <- paste("temp", "tmp.tif", sep = "/")
-  utils::download.file(tifurl, destfile = destfile, mode = "wb")
+  utils::download.file(tifurl, destfile = destfile, mode = "wb", method = "curl", extra = "-k")
   cdl_raster <- raster::raster(destfile)
 
   return(cdl_raster)
@@ -49,7 +49,7 @@ GetCDLFile <- function(year, b){
 #' ## not run
 #' # GetCDLValue(2017, -93.65, 42.03)
 #' @export
-#' @seealso \code\link{GetCDLFile}
+#' @seealso \code{\link{GetCDLFile}} \code{\link{GetSDLValue}}
 GetCDLValue <- function(year, lon, lat){
 
   pt <- cbind(lon = lon, lat = lat) %>% sp::SpatialPoints(proj4string = sp::CRS("+init=epsg:4326"))
@@ -78,22 +78,24 @@ GetCDLValue <- function(year, lon, lat){
 #'
 #' @param lon longitude in WGS84
 #' @param lat latitude in WGS84
-#' @return A list with the soil musym, mukey, muname, muacres
+#' @return a dataframe with soil areasymbol, musym, mukey, muname, muacres
 #' @examples
 #' ## not run
 #' # GetSDLValue(-93.65, 42.03)
 #' @export
-#' @seealso \code\link{GetCDLValue}
+#' @seealso \code{\link{GetCDLValue}}
 GetSDLValue <- function(lon, lat){
   ## lon, lat: longitude and latitude in WGS84
   pt <- matrix(c(lon, lat), nc = 2, byrow = T)
   circ <- dismo::circles(pt, d = .1, lonlat = TRUE)
   p <- rgeos::writeWKT(circ@polygons)
-  q <- paste0("SELECT musym, mukey, muname, muacres
-              FROM mapunit
-              WHERE mukey IN (
-              SELECT * from SDA_Get_Mukey_from_intersection_with_WktWgs84('", p, "')
-              )")
+  q <- paste0(
+          "SELECT areasymbol, musym, mukey, muname, muacres
+          FROM mapunit mu
+          INNER JOIN legend on legend.lkey = mu.lkey    
+          WHERE mukey IN (
+          SELECT * from SDA_Get_Mukey_from_intersection_with_WktWgs84('", p, "')
+          )")
   qres <- soilDB::SDA_query(q)
   if(nrow(qres)>1) {
     warning(sprintf("%.0f soil mapunits are found, choose the first one", nrow(qres)))
