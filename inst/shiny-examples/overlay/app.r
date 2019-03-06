@@ -162,7 +162,7 @@ server <- function(input, output, session) {
   ## CDL Markers ####
   cdl_markers <- reactiveValues(lng = NULL, lat = NULL, Id = NULL,
                                 year = NULL, category = NULL, value = NULL)
-  mu_markers <- reactiveValues(lng = NULL, lat = NULL, Id = NULL,
+  mu_markers <- reactiveValues(lng = NULL, lat = NULL, Id = NULL, areasym = NULL,
                                musym = NULL, mukey = NULL, muname = NULL, muacres = NULL)
 
   observeEvent(input$map_click,{
@@ -201,35 +201,29 @@ server <- function(input, output, session) {
         )
     }
     if(input$is_mu){
-      ## lng, lat: longitude and latitude in WGS84
-      pt <- matrix(c(clng, clat), nc = 2, byrow = T)
-      circ <- dismo::circles(pt, d = .1, lonlat = TRUE)
-      p <- rgeos::writeWKT(circ@polygons)
-      q <- paste0("SELECT musym, mukey, muname, muacres
-                  FROM mapunit
-                  WHERE mukey IN (
-                  SELECT * from SDA_Get_Mukey_from_intersection_with_WktWgs84('", p, "')
-                  )")
-      qres <- soilDB::SDA_query(q)
-      mu_markers$lng <- c(mu_markers$lng, pt[1])
-      mu_markers$lat <- c(mu_markers$lat, pt[2])
+      qres <- GetSDLValue(clng, clat)
+      mu_markers$lng <- c(mu_markers$lng, clng)
+      mu_markers$lat <- c(mu_markers$lat, clat)
       mu_markers$Id <- c(mu_markers$Id, Id)
-      mu_markers$musym <- c(mu_markers$musym, qres[1])
-      mu_markers$mukey <- c(mu_markers$mukey, qres[2])
-      mu_markers$muname <- c(mu_markers$muname, qres[3])
-      mu_markers$muacres <- c(mu_markers$muacres, qres[4])
+      mu_markers$areasym <- c(mu_markers$areasym, qres[1])
+      mu_markers$musym <- c(mu_markers$musym, qres[2])
+      mu_markers$mukey <- c(mu_markers$mukey, qres[3])
+      mu_markers$muname <- c(mu_markers$muname, qres[4])
+      mu_markers$muacres <- c(mu_markers$muacres, qres[5])
       leafletProxy("map") %>%
         addAwesomeMarkers(
-          lng = pt[1], lat = pt[2], icon = viscover:::myMarkerIcon(2), layerId = Id, clusterId = "P",
+          lng = clng, lat = clat, icon = viscover:::myMarkerIcon(2), layerId = Id, clusterId = "P",
           label = HTML(
             sprintf("<style>td{padding: 5px} </style>
                      <table style = 'background:rgb(255,255,255)' border>
                      <tr><td>Location</td><td>(%.4f, %.4f)</td></tr>
-                     <tr><td>MUSYM</td><td>%s</td></tr>
-                     <tr><td>MUKEY</td><td>%s</td></tr>
-                     <tr><td>MUNAME</td><td>%s</td></tr>
-                     <tr><td>MUACRES</td><td>%s</td></tr>
-                     </table>", pt[1], pt[2], qres[1], qres[2], qres[3], qres[4])),
+                     <tr><td>areasym</td><td>%s</td></tr>
+                     <tr><td>musym</td><td>%s</td></tr>
+                     <tr><td>mukey</td><td>%s</td></tr>
+                     <tr><td>muname</td><td>%s</td></tr>
+                     <tr><td>muacres</td><td>%s</td></tr>
+                     </table>", clng, clat,
+                    qres[1], qres[2], qres[3], qres[4], qres[5])),
           labelOptions = labelOptions(
             offset = c(-100, -120), opacity = 1,
             textOnly = TRUE, textsize = "12px",
@@ -243,23 +237,12 @@ server <- function(input, output, session) {
     # browser()
     Id.rm_c <- which(cdl_markers$Id == input$map_marker_click$id)
     if(length(Id.rm_c)){
-      cdl_markers$lng <- cdl_markers$lng[-Id.rm_c]
-      cdl_markers$lat <- cdl_markers$lat[-Id.rm_c]
-      cdl_markers$Id <- cdl_markers$Id[-Id.rm_c]
-      cdl_markers$year <- cdl_markers$year[-Id.rm_c]
-      cdl_markers$value <- cdl_markers$value[-Id.rm_c]
-      cdl_markers$category <- cdl_markers$category[-Id.rm_c]
+      cdl_markers <- lapply(cdl_markers, function(x) x[-Id.rm_c])
     }
 
     Id.rm_s <- which(mu_markers$Id == input$map_marker_click$id)
     if(length(Id.rm_s)){
-      mu_markers$lng <- mu_markers$lng[-Id.rm_s]
-      mu_markers$lat <- mu_markers$lat[-Id.rm_s]
-      mu_markers$Id <- mu_markers$Id[-Id.rm_s]
-      mu_markers$musym <- mu_markers$musym[-Id.rm_s]
-      mu_markers$mukey <- mu_markers$mukey[-Id.rm_s]
-      mu_markers$muname <- mu_markers$muname[-Id.rm_s]
-      mu_markers$muacres <- mu_markers$muacres[-Id.rm_s]
+      mu_markers <- lapply(mu_markers, function(x) x[-Id.rm_s])
     }
 
     leafletProxy("map") %>% removeMarker(layerId = input$map_marker_click$id)
@@ -355,11 +338,13 @@ server <- function(input, output, session) {
 
   tb_mapunit_area <- reactive({
     p <- rgeos::writeWKT(bb.poly())
-    q <- paste0("SELECT musym, nationalmusym, mukey, muname, muacres, mukind, farmlndcl
-                FROM mapunit
-                WHERE mukey IN (
-                SELECT * from SDA_Get_Mukey_from_intersection_with_WktWgs84('", p, "')
-                )")
+    q <- paste0(
+        "SELECT areasymbol, musym, mukey, muname, muacres, mukind, farmlndcl
+         FROM mapunit mu
+         INNER JOIN legend on legend.lkey = mu.lkey       
+         WHERE mukey IN (
+         SELECT * from SDA_Get_Mukey_from_intersection_with_WktWgs84('", p, "')
+         )")
     qres <- soilDB::SDA_query(q)
     qres %>%
       mutate(mukey = as.factor(mukey)) %>%
