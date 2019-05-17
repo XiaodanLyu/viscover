@@ -2,49 +2,63 @@
 library(shiny);library(shinycssloaders);library(shinydashboard);library(shinyWidgets)
 library(plotly);library(DT)
 library(leaflet);library(leaflet.extras)
-library(dplyr);library(sp)
+library(dplyr);library(sp);library(rgdal)
+library(viscover)
 
-## source help file
-# source("help.r")
 ## CDL legend URL
 legenduri <- "https://nassgeodata.gmu.edu/CropScapeService/wms_cdlall.cgi?version=1.1.1&service=wms&request=getlegendgraphic&layer=cdl_2009&format=image/png"
+## the most recent available CDL year
+lastyr <- as.numeric(format(Sys.Date(), "%Y")) - 1
 
 ui <- dashboardPage(
-  dashboardHeader(title = "Overlay Cropland Data Layer and Soil Mapunits", titleWidth = 500, disable = FALSE),
+  dashboardHeader(title = "viscover: VIsualize Soil and Crop data and their OVERlay", titleWidth = 550, disable = FALSE),
   dashboardSidebar(disable = TRUE),
   dashboardBody(
     fluidRow(
-      box(title = "info", status = "success", solidHeader = TRUE, width = 12,
+      box(title = "Info", status = "success", solidHeader = TRUE, width = 12,
           collapsible = TRUE, collapsed = TRUE,
-          p("This is a shiny app tool designed for interacting with",
-            tags$a(href = "https://nassgeodata.gmu.edu/CropScape/", "Cropland Data Layer (CDL)"),
-            "and",
-            tags$a(href = "https://sdmdataaccess.sc.egov.usda.gov", "Soil Data Layer (SDL).")),
-          tags$ul(
-            tags$li(
-              "The layer control at the bottom left corner allows you to preview CDL data across different years.
-              Press the top-left calendar button to confirm your choice of CDL year."),
-            tags$li(
-              "By selecting two tiles (Map unit polygon & Survey area polygon), you will
-               see the soil mapunits polygons within the current extent of the map."),
-            tags$li(
-              "Click the toggle switches at the top left corner to show information about CDL ('C') or SDL ('S').",
+          tabBox(
+            width = 12,
+            tabPanel(
+              "Introduction",
+              p("This is a shiny app tool designed for interacting with",
+                tags$a(href = "https://nassgeodata.gmu.edu/CropScape/", "Cropland Data Layer (CDL)"),
+                "and",
+                tags$a(href = "https://sdmdataaccess.sc.egov.usda.gov", "Soil Data Layer (SDL).")),
               tags$ul(
-                tags$li("Clicking the map would prompt to draw a marker (labelled as a yelow 'C' or a blue 'S') on that location.
+                tags$li(
+                  "The layer control at the bottom left corner allows you to preview CDL data across different years.
+              Press the top-left calendar button to confirm your choice of CDL year."),
+                tags$li(
+                  "By selecting two tiles (Map unit polygon & Survey area polygon), you will
+               see the soil mapunits polygons within the current extent of the map."),
+                tags$li(
+                  "Click the toggle switches at the top left corner to show information about CDL ('C') or SDL ('S').",
+                  tags$ul(
+                    tags$li("Clicking the map would prompt to draw a marker (labelled as a yelow 'C' or a blue 'S') on that location.
                         To see the CDL/SDL info for that location, hover over the marker.
                         Click the marker again to remove it."),
-                tags$li("The top-left download button would let you download a .csv file containing
+                    tags$li("The top-left download button would let you download a .csv file containing
                         the CDL/SDL features at the existing markers on the map."))
-            )
-          ),
-          p("This tool can be used to obtain an intersection of CDL and SDL for any small area in the contiguous United States." ),
-          tags$ul(
-            tags$li("Firstly, use the searchOSM or locateMe widget to zoom in to the area you're interested in."),
-            tags$li("Secondly, use the draw tools on the left to draw a polygon/rectangle/circle on the map."),
-            tags$li("Thirdly, unfold the 'Soil Data Layer' box under the map panel and click the 'update' button, then you'll be able to see the SDL information."),
-            tags$li("Lastly, unfold the 'Cropland Data Layer' box and then you'll be able to see the tabulated CDL pixels which fall within the red bounding box or the selected map units.")
-          ),
-          p("About the author:", tags$a(href = "http://annielyu.com", "Xiaodan Lyu"))
+                )
+              ),
+              p("This tool can be used to obtain an intersection of CDL and SDL for any small area in the contiguous United States." ),
+              tags$ul(
+                tags$li("Firstly, use the searchOSM or locateMe widget to zoom in to the area you're interested in."),
+                tags$li("Secondly, use the draw tools on the left to draw a polygon/rectangle/circle on the map."),
+                tags$li("Thirdly, unfold the 'Soil Data Layer' box under the map panel and click the 'update' button, then you'll be able to see the SDL information."),
+                tags$li("Lastly, unfold the 'Cropland Data Layer' box and then you'll be able to see the tabulated CDL pixels which fall within the red bounding box or the selected map units.")
+              ),
+              p("About the author:", tags$a(href = "http://annielyu.com", "Xiaodan Lyu")),
+              p("Acknowledgement: special thanks to", tags$a(href = "http://hofmann.public.iastate.edu/", "Dr. Heike Hofmann"), 
+                "and Dr. Emily Berg for their valuable advice.")
+            ),
+            tabPanel(
+              "Demo",
+              tags$div(
+                HTML('<iframe src="https://player.vimeo.com/video/321794430" width="640" height="348" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>')
+              ))
+          )
       ),
       hr(),
       box(width = 12,
@@ -96,7 +110,7 @@ ui <- dashboardPage(
 )
 
 server <- function(input, output, session) {
-
+  
   ## Base Map ####
   output$map <- renderLeaflet({
     leaflet() %>%
@@ -115,7 +129,7 @@ server <- function(input, output, session) {
                                  crs = leafletCRS(crsClass = "L.CRS.EPSG4326")),
         attribution = sprintf('<a href="https://sdmdataaccess.sc.egov.usda.gov">USDA NRCS Soil Data Mart database</a>. Accessed [%s]', Sys.Date())
       ) -> p
-    cdl.yr <- 1997:2017
+    cdl.yr <- 1997:lastyr
     iter <- 0
     repeat{
       iter <- iter + 1
@@ -158,13 +172,13 @@ server <- function(input, output, session) {
       )
     p
   })
-
+  
   ## CDL Markers ####
   cdl_markers <- reactiveValues(lng = NULL, lat = NULL, Id = NULL,
                                 year = NULL, category = NULL, value = NULL)
   mu_markers <- reactiveValues(lng = NULL, lat = NULL, Id = NULL, areasym = NULL,
                                musym = NULL, mukey = NULL, muname = NULL, muacres = NULL)
-
+  
   observeEvent(input$map_click,{
     click <- input$map_click
     clng <- click$lng
@@ -232,22 +246,22 @@ server <- function(input, output, session) {
                          "width" = "100%")))
     }
   })
-
+  
   observeEvent(input$map_marker_click,{
     # browser()
     Id.rm_c <- which(cdl_markers$Id == input$map_marker_click$id)
     if(length(Id.rm_c)){
       cdl_markers <- lapply(cdl_markers, function(x) x[-Id.rm_c])
     }
-
+    
     Id.rm_s <- which(mu_markers$Id == input$map_marker_click$id)
     if(length(Id.rm_s)){
       mu_markers <- lapply(mu_markers, function(x) x[-Id.rm_s])
     }
-
+    
     leafletProxy("map") %>% removeMarker(layerId = input$map_marker_click$id)
   })
-
+  
   ## Soil Mapunit Polygons ####
   bb.poly <- eventReactive(input$map_draw_new_feature,{
     coords <- input$map_draw_new_feature$geometry$coordinates %>%
@@ -263,7 +277,7 @@ server <- function(input, output, session) {
       bb.poly <- circ@polygons
     }
   })
-
+  
   mu.polys <- reactive({
     input$go_mu
     bb.poly <- isolate(bb.poly())
@@ -276,12 +290,12 @@ server <- function(input, output, session) {
       mutate(muacres = sum(as.numeric(muareaacres))) %>% ungroup
     mu.polys
   })
-
+  
   observeEvent(input$go_mu,{
     bb.poly <- bb.poly()
     mu.polys <- mu.polys()
     b2 <- as.vector(sp::bbox(mu.polys))
-
+    
     leafletProxy("map", session) %>%
       clearShapes() %>%
       addPolygons(data = as(raster::extent(sp::bbox(bb.poly)), "SpatialPolygons"),
@@ -296,7 +310,7 @@ server <- function(input, output, session) {
           openPopup = TRUE)) %>%
       fitBounds(lng1 = b2[1], lng2 = b2[3], lat1 = b2[2], lat2 = b2[4])
   })
-
+  
   observe({
     if(length(input$tbl_mu_rows_selected)){
       tb_s <- input$tbl_mu_rows_selected
@@ -328,18 +342,18 @@ server <- function(input, output, session) {
                                                         weight = 5, fillOpacity = 0))
     }
   })
-
+  
   ## Soil Box ####
   tb_mapunit <- reactive({
     mu.polys <- mu.polys()
     mu.polys@data %>% dplyr::select(-muareaacres, -mupolygonkey) %>%
       unique %>% arrange(desc(muacres)) %>% dplyr::select(mukey, everything())
   })
-
+  
   tb_mapunit_area <- reactive({
     p <- rgeos::writeWKT(bb.poly())
     q <- paste0(
-        "SELECT areasymbol, musym, mukey, muname, muacres, mukind, farmlndcl
+      "SELECT areasymbol, musym, mukey, muname, muacres, mukind, farmlndcl
          FROM mapunit mu
          INNER JOIN legend on legend.lkey = mu.lkey       
          WHERE mukey IN (
@@ -351,7 +365,7 @@ server <- function(input, output, session) {
       arrange(desc(muacres)) %>%
       dplyr::select(mukey, everything())
   })
-
+  
   output$tbl_mu <- DT::renderDataTable({
     # if(input$mu_type == 1) {
     tb <- tb_mapunit()
@@ -366,22 +380,22 @@ server <- function(input, output, session) {
                   backgroundColor = styleEqual(
                     tb_ref$mukey, colorNumeric("YlOrBr", tb_ref$muacres)(tb_ref$muacres)))
   })
-
+  
   ## CDL Box ####
   cdl.year <- reactive({
     input$go_cdl
     group <- grep("Cropland", isolate(input$map_groups), value = TRUE)
-    return(ifelse(length(group), gsub("Cropland Data Layer - ", "", group), 2017))
+    return(ifelse(length(group), gsub("Cropland Data Layer - ", "", group), lastyr))
   })
-
+  
   cdl.tile <- reactive({
     return(GetCDLFile(cdl.year(), mu.polys()))
   })
-
+  
   cdl.tile.bb <- reactive({
     return(GetCDLFile(cdl.year(), bb.poly()))
   })
-
+  
   cdl_tibble <- reactive({
     if(input$cdl_type == 1){
       cdl.tile <- cdl.tile.bb()
@@ -405,14 +419,14 @@ server <- function(input, output, session) {
       left_join(cdl.dbf[,1:2], by = "VALUE")
     tb2 %>% dplyr::select(VALUE, CATEGORY = CLASS_NAME, COUNT) %>% arrange(desc(COUNT))
   })
-
+  
   output$tbl_cdl <- DT::renderDataTable({
     tb <- cdl_tibble()
     DT::datatable(tb, caption = paste("CDL Year", cdl.year())) %>%
       formatStyle("CATEGORY", fontWeight = "bold",
                   backgroundColor = styleEqual(tb$CATEGORY, cdlpal(tb$VALUE)))
   })
-
+  
   output$plot_cdl <- renderPlotly({
     d <- cdl_tibble()
     plot_ly(data = d %>% filter(!is.na(CATEGORY)),
@@ -425,7 +439,7 @@ server <- function(input, output, session) {
     p$elementId <- NULL
     p
   })
-
+  
   ## Download Handlers ####
   output$download_mu <- downloadHandler(
     filename = function(){
@@ -438,7 +452,7 @@ server <- function(input, output, session) {
       #     write.csv(tb_mapunit_area(), con)
     }
   )
-
+  
   output$download_cdl <- downloadHandler(
     filename = function(){
       paste0('cdl_', cdl.year(), '-', Sys.Date(), '.csv')
@@ -447,7 +461,7 @@ server <- function(input, output, session) {
       write.csv(cdl_tibble(), con)
     }
   )
-
+  
   out_markers <- reactive({
     # browser()
     if(input$is_mu){
@@ -462,7 +476,7 @@ server <- function(input, output, session) {
       sapply(unlist)
     return(marker_tb)
   })
-
+  
   output$download_cdl_markers <- downloadHandler(
     filename = function(){
       sprintf('%s_markers-%s.csv', ifelse(input$is_mu, "mu", "cdl"), Sys.Date())
@@ -471,7 +485,7 @@ server <- function(input, output, session) {
       write.csv(out_markers(), con, row.names = FALSE, quote = FALSE)
     }
   )
-
+  
 }
 
 shinyApp(ui = ui, server = server)
