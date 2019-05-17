@@ -18,7 +18,7 @@ a dataframe with the counts of tile points in the polygon
 Obtain the spatial intersection of a rater tile and a spatial polygon.
 }
 \examples{
+cdl_tmp <- raster::raster(system.file("tif/cdl_tmp.tif", package = "viscover"))
 ## not run
-# tile <- raster::raster(system.file("tif/cdf_tmp.tif", package = "viscover"))
-# TileinPoly(tile, poly)
+# TileinPoly(cdl_tmp, poly)
 }
