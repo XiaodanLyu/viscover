@@ -19,5 +19,6 @@ Obtain the spatial intersection of a rater tile and a spatial polygon.
 }
 \examples{
 ## not run
+# tile <- raster::raster(system.file("tif/cdf_tmp.tif", package = "viscover"))
 # TileinPoly(tile, poly)
 }
