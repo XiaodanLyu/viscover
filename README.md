@@ -70,5 +70,5 @@ Or you can find a live tool at <https://lyux.shinyapps.io/viscover/>.
 Below is a video demo of using the tool.
 
 <figure class="video_container">
-<iframe src="https://player.vimeo.com/video/321794430" width="640" height="348" frameborder="0" allow="autoplay; fullscreen" allowfullscreen> </iframe>
+   <iframe src="https://player.vimeo.com/video/321794430" width="640" height="348" frameborder="0" allow="autoplay; fullscreen" allowfullscreen> </iframe>
 </figure>
