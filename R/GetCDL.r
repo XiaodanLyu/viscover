@@ -22,7 +22,7 @@ GetCDLFile <- function(year, b){
   crs.cropscape <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
   bb.poly.proj <- sp::spTransform(bb.poly, crs.cropscape)
   b2 <- as.vector(sp::bbox(bb.poly.proj))
-  url <- paste0(baseurl, 'year=', year, '&bbox=', glue::collapse(b2, sep = ","))
+  url <- paste0(baseurl, 'year=', year, '&bbox=', glue::glue_collapse(b2, sep = ","))
   html <- RCurl::getURL(url, .opts = list(ssl.verifypeer = FALSE), crlf = TRUE)
   doc <- XML::xmlTreeParse(html)
   top <- XML::xmlRoot(doc)
@@ -30,7 +30,8 @@ GetCDLFile <- function(year, b){
   # cdl_raster <- raster(tifurl) ## only works on Mac OS
   dir.create("temp", showWarnings = FALSE)
   destfile <- paste("temp", "tmp.tif", sep = "/")
-  utils::download.file(tifurl, destfile = destfile, mode = "wb", method = "curl", extra = "-k")
+  downloader::download(tifurl, destfile, mode = "wb", quiet = TRUE)
+  # utils::download.file(tifurl, destfile = destfile, mode = "wb", method = "curl", extra = "-k")
   cdl_raster <- raster::raster(destfile)
 
   return(cdl_raster)

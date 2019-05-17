@@ -2,14 +2,14 @@ Package: viscover
 Version: 0.1.0
 Date: 2019-04-15
 Title: Visualize SSURGO and CDL and their Overlay
-Authors@R: person("Xiaodan", "Lyu", email = "lyux1994@gmail.com", role = c("aut", "cre"))
-Description: This package embed a shiny app to visualize soil survey data and cropland data layer. Some functions to fetch CDL file and values are also provided.
+Authors@R: person("Xiaodan", "Lyu", email = "annielyu8@gmail.com", role = c("aut", "cre"))
+Description: This package embeds a shiny app to visualize soil survey data and cropland data layer. Some functions to fetch CDL file and values are also provided.
 Depends: R (>= 3.1.0)
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/XiaodanLyu/viscover
-Imports: raster, sp, rgdal, XML, glue, dplyr, utils, methods, dismo, RCurl, magrittr, rgeos, soilDB (>= 2.0-1), leaflet (>= 2.0.0), leaflet.extras (>= 1.0.0), plotly (>= 4.8.0), DT, shiny (>= 1.1.0), shinycssloaders, shinydashboard, shinyWidgets
+Imports: raster, sp, rgdal, XML, glue, dplyr, utils, downloader, methods, dismo, RCurl, magrittr, rgeos, soilDB (>= 2.0-1), leaflet (>= 2.0.0), leaflet.extras (>= 1.0.0), plotly (>= 4.8.0), DT, shiny (>= 1.1.0), shinycssloaders, shinydashboard, shinyWidgets
 RoxygenNote: 6.1.1
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
