@@ -11,6 +11,7 @@ NULL
 #' @return a dataframe with the counts of tile points in the polygon
 #' @examples
 #' ## not run
+#' # tile <- raster::raster(system.file("tif/cdf_tmp.tif", package = "viscover"))
 #' # TileinPoly(tile, poly)
 #' @export
 TileinPoly <- function(tile, poly){

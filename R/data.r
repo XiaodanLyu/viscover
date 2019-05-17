@@ -1,8 +1,3 @@
-#'  An example CDL raster
-#'
-#' @format A raster layer with 72 rows and 37 columns
-"tile"
-
 #'  An example spatial polygon from soil survey data
 #'
 #' @format A SpatialPolygonsDataFrame with 7 parital map unit polygons. The data slot has 7 rows and 8 variables.
