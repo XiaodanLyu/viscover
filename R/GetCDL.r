@@ -27,13 +27,16 @@ GetCDLFile <- function(year, b){
   doc <- XML::xmlTreeParse(html)
   top <- XML::xmlRoot(doc)
   tifurl <- XML::xmlValue(top[[1]][["text"]])
-  # cdl_raster <- raster(tifurl) ## only works on Mac OS
+  # cdl_raster <- raster(tifurl) ## not working on windows
   dir.create("temp", showWarnings = FALSE)
   destfile <- paste("temp", "tmp.tif", sep = "/")
-  downloader::download(tifurl, destfile, mode = "wb", quiet = TRUE)
-  # utils::download.file(tifurl, destfile = destfile, mode = "wb", method = "curl", extra = "-k")
+  if(Sys.info()["sysname"] == "Windows"){
+    downloader::download(tifurl, destfile, mode = "wb", quiet = TRUE)
+  }
+  if(Sys.info()["sysname"] != "Windows"){
+    utils::download.file(tifurl, destfile = destfile, mode = "wb", method = "curl", extra = "-k")
+  }
   cdl_raster <- raster::raster(destfile)
-
   return(cdl_raster)
 }
 
