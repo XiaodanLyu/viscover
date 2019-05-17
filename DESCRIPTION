@@ -1,5 +1,5 @@
 Package: viscover
-Version: 0.1.0
+Version: 0.1.1
 Date: 2019-04-15
 Title: Visualize SSURGO and CDL and their Overlay
 Authors@R: person("Xiaodan", "Lyu", email = "annielyu8@gmail.com", role = c("aut", "cre"))
