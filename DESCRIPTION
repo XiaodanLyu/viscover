@@ -9,7 +9,7 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/XiaodanLyu/viscover
-Imports: raster, sp, rgdal, XML, glue, dplyr, utils, downloader, methods, dismo, RCurl, magrittr, rgeos, soilDB (>= 2.0-1), leaflet (>= 2.0.0), leaflet.extras (>= 1.0.0), plotly (>= 4.8.0), DT, shiny (>= 1.1.0), shinycssloaders, shinydashboard, shinyWidgets
+Imports: raster, sp, rgdal, XML, glue, dplyr, utils, downloader, methods, dismo, RCurl, magrittr, rgeos, soilDB (>= 2.0-1)
 RoxygenNote: 6.1.1
-Suggests: knitr, rmarkdown
+Suggests: knitr, rmarkdown, leaflet (>= 2.0.0), leaflet.extras (>= 1.0.0), plotly (>= 4.8.0), DT, shiny (>= 1.1.0), shinycssloaders, shinydashboard, shinyWidgets
 VignetteBuilder: knitr
