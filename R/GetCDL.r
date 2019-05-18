@@ -54,8 +54,10 @@ GetCDLFile <- function(year, b){
 #' # GetCDLValue(2017, -93.65, 42.03)
 #' @export
 #' @seealso \code{\link{GetCDLFile}} \code{\link{GetSDLValue}}
-GetCDLValue <- function(year, lon, lat){
-
+ GetCDLValue <- function(year, lon, lat){
+  if(length(year)!=1|length(lon)!=1|length(lat)!=1){
+    stop("One year and one location at a time!")
+  }
   pt <- cbind(lon = lon, lat = lat) %>% sp::SpatialPoints(proj4string = sp::CRS("+init=epsg:4326"))
   baseurl <- "https://nassgeodata.gmu.edu/axis2/services/CDLService/GetCDLValue?"
   crs.cropscape <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
@@ -89,6 +91,9 @@ GetCDLValue <- function(year, lon, lat){
 #' @export
 #' @seealso \code{\link{GetCDLValue}}
 GetSDLValue <- function(lon, lat){
+  if(length(lon)!=1|length(lat)!=1){
+    stop("One location at a time!")
+  }
   ## lon, lat: longitude and latitude in WGS84
   pt <- matrix(c(lon, lat), nc = 2, byrow = T)
   circ <- dismo::circles(pt, d = .1, lonlat = TRUE)
