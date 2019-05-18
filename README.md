@@ -147,6 +147,8 @@ cdl_pt[geometry(sdl_poly),] %>% data.frame() %>%
 
 ![](figures/unnamed-chunk-7-1.png)<!-- -->
 
+## References
+
 <div id="refs" class="references">
 
 <div id="ref-shiny">
