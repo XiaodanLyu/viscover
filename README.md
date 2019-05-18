@@ -37,7 +37,7 @@ GetSDLValue(lon = -93.65, lat = 42.03)
 
 ### Small domain
 
-`poly` is an example soil spatial polygon data frame embeded in this
+`poly` is an example soil spatial polygon data frame embedded in this
 package.
 
 ``` r
@@ -57,13 +57,13 @@ GetCDLFile(year = 2018, b = poly)
 #> values      : 0, 255  (min, max)
 ```
 
-R package `soilDB`(Skovlin and Roecker 2019) provides a convient
+R package `soilDB`(Skovlin and Roecker 2019) provides a convenient
 function for fetching soil data by bounding box.
 
 ``` r
 soilDB::mapunit_geom_by_ll_bbox(sp::bbox(poly))
 #> OGR data source with driver: GML 
-#> Source: "C:\Users\lyux\AppData\Local\Temp\RtmpeshFj5\file11745ff450e5.gml", layer: "mapunitpoly"
+#> Source: "C:\Users\lyux\AppData\Local\Temp\RtmpCQXrw9\file1f046be166a9.gml", layer: "mapunitpoly"
 #> with 89 features
 #> It has 8 fields
 #> class       : SpatialPolygonsDataFrame 
@@ -93,10 +93,8 @@ glimpse(scover)
 ```
 
 One can refer `cdl.dbf` to interpret the CDL code. `cdl.dbf` also
-contains the RGB color code used by CDL legend.
-
-![2018 CDL color
-legend (https://www.nass.usda.gov/Research_and_Science/Cropland/docs/US_2018_CDL_legend.jpg)](https://www.nass.usda.gov/Research_and_Science/Cropland/docs/US_2018_CDL_legend.jpg)
+contains the RGB color code used by CDL legend
+(<https://www.nass.usda.gov/Research_and_Science/Cropland/docs/US_2018_CDL_legend.jpg>).
 
 ``` r
 cdl.dbf %>% glimpse()
