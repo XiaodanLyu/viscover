@@ -125,6 +125,8 @@ This package embeds a `Shiny`(Chang et al. 2018) tool to visualize the
 two data layers. You can run the tool from R console using `runTool()`.
 Or one can find a live tool at <https://lyux.shinyapps.io/viscover/>.
 
+![](figures/overlay-CDL2018.png)
+
 ### ggplot2
 
 One can also produce a plot of the overlaid result using
