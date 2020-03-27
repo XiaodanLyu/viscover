@@ -16,7 +16,7 @@ layer](https://websoilsurvey.sc.egov.usda.gov/App/WebSoilSurvey.aspx)
 two data layers. You can run the tool from R console using `runTool()`.
 Or one can find a live tool at <https://lyux.shinyapps.io/viscover/>. 
 
-*This Shiny tool is now featured in the [RStudio Shiny Gallery](https://shiny.rstudio.com/gallery/viscover.html). If you are interested more about my experience of R Shiny development, please refer to [this blog post](https://annielyu.com/2020/02/04/viscover-shiny/) I wrote on my personal website.*
+> This Shiny tool is now featured in the [RStudio Shiny Gallery](https://shiny.rstudio.com/gallery/viscover.html). If you are interested in learning more about my experience or seeking for general advices about R Shiny development, please refer to [this blog post](https://annielyu.com/2020/02/04/viscover-shiny/) I wrote on my personal website. :bowtie:
 
 The following screenshot of the tool shows our lovely Iowa State University campus (center grey area) is surrounded by large fields of soybeans (green pixels) and corns (yellow pixels).
 
