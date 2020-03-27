@@ -14,9 +14,11 @@ layer](https://nassgeodata.gmu.edu/CropScape/) (CDL) and [soil data
 layer](https://websoilsurvey.sc.egov.usda.gov/App/WebSoilSurvey.aspx)
 (SDL) at point-level and small domain. This package also embeds a `Shiny`(Chang et al. 2018) tool to visualize the
 two data layers. You can run the tool from R console using `runTool()`.
-Or one can find a live tool at <https://lyux.shinyapps.io/viscover/>.
+Or one can find a live tool at <https://lyux.shinyapps.io/viscover/>. 
 
-The following screenshot of the tool shows our lovely Iowa State University campus is surrounded by large fields of soybeans (in green) and corns (in yellow).
+*This Shiny tool is now featured in the [RStudio Shiny Gallery](https://shiny.rstudio.com/gallery/viscover.html). If you are interested more about my experience of R Shiny development, please refer to [this blog post](https://annielyu.com/2020/02/04/viscover-shiny/) I wrote on my personal website.*
+
+The following screenshot of the tool shows our lovely Iowa State University campus (center grey area) is surrounded by large fields of soybeans (green pixels) and corns (yellow pixels).
 
 ![](figures/overlay-CDL2018.png)
 
@@ -125,7 +127,7 @@ scover %>%
 ```
 
 One can also produce a plot of the overlaid result using
-`ggplot2`(Wickham 2016). `cdlpal` returns a Hex color code when a CDL
+`ggplot2`(Wickham 2016). `cdlpal` returns a Hex color code when a CDL category
 code is provided.
 
 ``` r
