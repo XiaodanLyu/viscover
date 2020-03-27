@@ -3,17 +3,24 @@
 Run the following from an R console:
 
 ``` r
-if(!require("devtools")) 
-  install.packages("devtools")
+if(!require("devtools"))  install.packages("devtools")
 devtools::install_github("XiaodanLyu/viscover")
 ```
 
-## Web Scraping
+## Introduction
 
 This tiny package is developed to web-scrape [cropland data
 layer](https://nassgeodata.gmu.edu/CropScape/) (CDL) and [soil data
 layer](https://websoilsurvey.sc.egov.usda.gov/App/WebSoilSurvey.aspx)
-(SDL) at point-level and small domain.
+(SDL) at point-level and small domain. This package also embeds a `Shiny`(Chang et al. 2018) tool to visualize the
+two data layers. You can run the tool from R console using `runTool()`.
+Or one can find a live tool at <https://lyux.shinyapps.io/viscover/>.
+
+The following screenshot of the tool shows our lovely Iowa State University campus is surrounded by large fields of soybeans (in green) and corns (in yellow).
+
+![](figures/overlay-CDL2018.png)
+
+## Web Scraping
 
 ### Point level
 
@@ -116,18 +123,6 @@ scover %>%
 #> $ Freq       <int> 255, 5, 1, 7, 18, 161, 69, 27, 18
 #> $ CLASS_NAME <fct> Corn, Soybeans, Rye, Alfalfa, Developed/Open Space,...
 ```
-
-## Visualize
-
-### Shiny app
-
-This package embeds a `Shiny`(Chang et al. 2018) tool to visualize the
-two data layers. You can run the tool from R console using `runTool()`.
-Or one can find a live tool at <https://lyux.shinyapps.io/viscover/>.
-
-![](figures/overlay-CDL2018.png)
-
-### ggplot2
 
 One can also produce a plot of the overlaid result using
 `ggplot2`(Wickham 2016). `cdlpal` returns a Hex color code when a CDL
